@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Likhithashree AJ — Java Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0f0d;
+    --surface: #0f1712;
+    --surface2: #141f18;
+    --accent: #3dffa0;
+    --accent2: #00c96e;
+    --accent-dim: rgba(61,255,160,0.12);
+    --accent-border: rgba(61,255,160,0.25);
+    --text: #e8f0eb;
+    --text-muted: #7a9982;
+    --text-dim: #4a6452;
+    --red: #ff5f5f;
+    --amber: #ffb347;
+    --blue: #5bc8ff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--accent-border);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.3s ease;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(10,15,13,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0; right: 0;
+    height: 1px; background: var(--accent);
+    transform: scaleX(0); transition: transform 0.25s ease;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(61,255,160,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(61,255,160,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 70% at 70% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-orb {
+    position: absolute;
+    right: -100px; top: 50%;
+    transform: translateY(-50%);
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(61,255,160,0.18) 0%, rgba(0,201,110,0.06) 40%, transparent 70%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .hero-left { position: relative; z-index: 1; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    border: 1px solid var(--accent-border);
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: var(--accent-dim);
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  h1 .name-accent {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero-role {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 28px;
+    margin-top: 16px;
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin-bottom: 44px;
+  }
+  .hero-desc strong { color: var(--text); font-weight: 500; }
+
+  .hero-cta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent);
+    color: var(--bg);
+    padding: 14px 28px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    border: none; cursor: none;
+  }
+  .btn-primary:hover { background: #fff; transform: translateY(-2px); }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--accent);
+    padding: 14px 28px;
+    border: 1px solid var(--accent-border);
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    background: var(--accent-dim);
+    cursor: none;
+  }
+  .btn-ghost:hover { background: rgba(61,255,160,0.2); transform: translateY(-2px); }
+
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; z-index: 1;
+  }
+
+  .terminal {
+    background: var(--surface);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    width: 380px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(61,255,160,0.08), 0 32px 64px rgba(0,0,0,0.4);
+  }
+  .terminal-header {
+    background: var(--surface2);
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--accent-border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.red { background: #ff5f57; }
+  .dot.amber { background: #febc2e; }
+  .dot.green { background: #28c840; }
+  .terminal-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-left: 8px;
+  }
+  .terminal-body { padding: 24px; }
+  .term-line {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 2;
+    display: flex; gap: 12px;
+  }
+  .term-prompt { color: var(--accent); }
+  .term-cmd { color: var(--text); }
+  .term-output { color: var(--text-muted); padding-left: 20px; }
+  .term-val { color: var(--accent); }
+  .term-spacer { height: 8px; }
+  .cursor-blink {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    animation: blink 1.2s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--accent-border);
+    border-top: 1px solid var(--accent-border);
+  }
+  .stat-box {
+    background: var(--surface);
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--accent);
+    display: block;
+  }
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  section {
+    padding: 100px 48px;
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--accent);
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 4vw, 52px);
+    line-height: 1.1;
+    margin-bottom: 56px;
+  }
+
+  .exp-timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+  .exp-timeline::before {
+    content: '';
+    position: absolute; left: 0; top: 8px; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  .exp-card {
+    position: relative;
+    margin-bottom: 56px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid rgba(61,255,160,0.1);
+    border-radius: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .exp-card:hover {
+    border-color: var(--accent-border);
+    box-shadow: 0 0 40px rgba(61,255,160,0.06);
+  }
+  .exp-card::before {
+    content: '';
+    position: absolute;
+    left: -39px; top: 36px;
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .exp-meta {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+    margin-bottom: 8px;
+  }
+  .exp-company {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--text);
+  }
+  .exp-period {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+  .exp-role {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    letter-spacing: 0.08em;
+  }
+
+  .exp-achievements { display: grid; gap: 12px; }
+
+  .achievement {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 14px 16px;
+    background: rgba(61,255,160,0.04);
+    border-left: 2px solid var(--accent-dim);
+    border-radius: 0 6px 6px 0;
+    transition: border-left-color 0.2s, background 0.2s;
+  }
+  .achievement:hover {
+    border-left-color: var(--accent);
+    background: rgba(61,255,160,0.07);
+  }
+  .achievement-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+  .achievement-text { font-size: 14px; line-height: 1.65; color: var(--text-muted); }
+  .achievement-text strong { color: var(--text); font-weight: 500; }
+  .metric {
+    display: inline-block;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .skill-category {
+    background: var(--surface);
+    border: 1px solid rgba(61,255,160,0.1);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.3s;
+  }
+  .skill-category:hover { border-color: var(--accent-border); }
+
+  .skill-cat-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .skill-cat-icon {
+    width: 36px; height: 36px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .skill-cat-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(61,255,160,0.15);
+    color: var(--text-muted);
+    background: rgba(61,255,160,0.03);
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .highlight-card {
+    background: var(--surface);
+    border: 1px solid rgba(61,255,160,0.1);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .highlight-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    transform: scaleX(0); transition: transform 0.3s;
+  }
+  .highlight-card:hover { transform: translateY(-4px); border-color: var(--accent-border); }
+  .highlight-card:hover::before { transform: scaleX(1); }
+
+  .highlight-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .highlight-label { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+
+  .contact-section {
+    text-align: center;
+    padding: 100px 48px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .contact-section h2 { margin-bottom: 16px; }
+  .contact-desc { color: var(--text-muted); font-size: 16px; line-height: 1.75; margin-bottom: 44px; }
+  .contact-links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  footer {
+    border-top: 1px solid rgba(61,255,160,0.1);
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  footer span { color: var(--accent); }
+
+  .divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(61,255,160,0.2), transparent);
+    margin: 0 48px;
+    max-width: calc(100% - 96px);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
+    .hero-right { display: none; }
+    nav { padding: 16px 24px; }
+    .nav-links { gap: 20px; }
+    section { padding: 60px 24px; }
+    .contact-section { padding: 60px 24px; }
+    footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px; }
+    .divider { margin: 0 24px; max-width: calc(100% - 48px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo">LAJ.dev</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<div class="hero" id="about">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-orb"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag">Open to Java Engineer Roles</div>
+    <h1>Likhitha<br><span class="name-accent">shree AJ</span></h1>
+    <p class="hero-role">// Java Software Engineer · Bengaluru, India</p>
+    <p class="hero-desc">
+      I build <strong>backend systems that scale</strong>. 3+ years shipping production-grade Java services in fintech —
+      Spring Boot, microservices, batch pipelines processing <strong>2M+ transactions nightly</strong>, and security integrations
+      across major payment platforms.
+    </p>
+    <div class="hero-cta">
+      <a href="mailto:likhithashreejver@gmail.com" class="btn-primary">↗ Get In Touch</a>
+      <a href="https://www.linkedin.com/in/likhithashree-a-j-50834b258/" target="_blank" class="btn-ghost">LinkedIn Profile</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="dot red"></div>
+        <div class="dot amber"></div>
+        <div class="dot green"></div>
+        <span class="terminal-title">engineer.profile</span>
+      </div>
+      <div class="terminal-body">
+        <div class="term-line">
+          <span class="term-prompt">$</span>
+          <span class="term-cmd">cat profile.json</span>
+        </div>
+        <div class="term-spacer"></div>
+        <div class="term-line term-output">name: <span class="term-val">"Likhithashree AJ"</span></div>
+        <div class="term-line term-output">role: <span class="term-val">"Java Software Engineer"</span></div>
+        <div class="term-line term-output">exp: <span class="term-val">"3+ years"</span></div>
+        <div class="term-line term-output">domain: <span class="term-val">"Fintech / Banking"</span></div>
+        <div class="term-line term-output">stack: <span class="term-val">"Java 17, Spring Boot"</span></div>
+        <div class="term-line term-output">       <span class="term-val">"Spring Batch, MySQL"</span></div>
+        <div class="term-line term-output">       <span class="term-val">"Redis, AWS, OAuth2"</span></div>
+        <div class="term-line term-output">status: <span class="term-val">"seeking opportunities"</span></div>
+        <div class="term-spacer"></div>
+        <div class="term-line">
+          <span class="term-prompt">$</span>
+          <span class="cursor-blink"></span>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-num">3+</span>
+          <span class="stat-label">Years Exp</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">2M+</span>
+          <span class="stat-label">Txns/Night</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">78%</span>
+          <span class="stat-label">Test Coverage</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Highlights -->
+<section style="padding-top: 80px; padding-bottom: 80px; max-width: 1200px; margin: 0 auto;">
+  <div class="highlights-grid reveal">
+    <div class="highlight-card">
+      <div class="highlight-num">40%</div>
+      <div class="highlight-label">Reduction in Spring Batch job runtime via parallel-step processing</div>
+    </div>
+    <div class="highlight-card">
+      <div class="highlight-num">35%</div>
+      <div class="highlight-label">API response latency cut across 6+ microservices</div>
+    </div>
+    <div class="highlight-card">
+      <div class="highlight-num">0→78%</div>
+      <div class="highlight-label">Unit test coverage built from scratch across 4 payment modules</div>
+    </div>
+    <div class="highlight-card">
+      <div class="highlight-num">4h→30m</div>
+      <div class="highlight-label">Daily transaction workflow time slashed with batch automation</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Experience -->
+<section id="experience">
+  <div class="section-tag">Career</div>
+  <h2>Work Experience</h2>
+
+  <div class="exp-timeline reveal">
+    <div class="exp-card">
+      <div class="exp-meta">
+        <div>
+          <div class="exp-company">Reward360 Global Services</div>
+          <div class="exp-role">JAVA SOFTWARE DEVELOPER · HDFC-MYCARDS PLATFORM</div>
+        </div>
+        <span class="exp-period">May 2023 – Present</span>
+      </div>
+
+      <div class="exp-achievements">
+        <div class="achievement">
+          <div class="achievement-icon">⚡</div>
+          <div class="achievement-text">
+            Designed and owned nightly batch pipeline processing <span class="metric">2M+</span> loyalty point transactions using Spring Batch with parallel-step jobs and chunk-oriented processing — achieving <span class="metric">40% faster</span> runtime and zero data loss across all runs.
+          </div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">🔧</div>
+          <div class="achievement-text">
+            Implemented <span class="metric">6+ RESTful microservices</span> in Spring Boot, refactoring a monolithic codebase into independently deployable services, reducing API response latency by <span class="metric">~35%</span>.
+          </div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">🔒</div>
+          <div class="achievement-text">
+            Owned end-to-end delivery of <strong>OAuth 2.0 / SAML SSO</strong> integrations for PayZapp, Tata Pay, and PhonePe — designing token validation flows, session management, and fallback logic from scratch. Implemented <strong>AES-256 encryption</strong> across <span class="metric">1M+ user records</span>.
+          </div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">🧪</div>
+          <div class="achievement-text">
+            Grew unit test coverage from <span class="metric">0% → 78%</span> across 4 critical payment modules using JUnit 5 and Mockito, driving production bugs down by <span class="metric">~3 per sprint</span> within the quarter.
+          </div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">🗄️</div>
+          <div class="achievement-text">
+            Identified and resolved a systemic SQL performance issue — rewrote <span class="metric">12+ unindexed queries</span> using composite indexes and query plan analysis, directly reducing DB CPU utilization during peak load.
+          </div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">♻️</div>
+          <div class="achievement-text">
+            Introduced <strong>Redis caching</strong> at the service layer to eliminate repeated downstream calls, and applied SOLID principles with Strategy, Factory, and Builder patterns during microservices decomposition.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Skills -->
+<section id="skills">
+  <div class="section-tag">Stack</div>
+  <h2>Technical Skills</h2>
+
+  <div class="skills-grid reveal">
+    <div class="skill-category">
+      <div class="skill-cat-header">
+        <div class="skill-cat-icon">☕</div>
+        <div class="skill-cat-name">Core Languages</div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Java 17</span>
+        <span class="skill-tag">Java 8</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">OOP</span>
+        <span class="skill-tag">Multi-threading</span>
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <div class="skill-cat-header">
+        <div class="skill-cat-icon">🍃</div>
+        <div class="skill-cat-name">Frameworks</div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Spring Boot</span>
+        <span class="skill-tag">Spring Batch</span>
+        <span class="skill-tag">Spring MVC</span>
+        <span class="skill-tag">Spring WebFlux</span>
+        <span class="skill-tag">Hibernate</span>
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <div class="skill-cat-header">
+        <div class="skill-cat-icon">🗄️</div>
+        <div class="skill-cat-name">Databases & Caching</div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">MySQL</span>
+        <span class="skill-tag">SQL Server</span>
+        <span class="skill-tag">MongoDB</span>
+        <span class="skill-tag">Redis</span>
+        <span class="skill-tag">JDBC</span>
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <div class="skill-cat-header">
+        <div class="skill-cat-icon">☁️</div>
+        <div class="skill-cat-name">Cloud & DevOps</div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">AWS EC2</span>
+        <span class="skill-tag">AWS S3</span>
+        <span class="skill-tag">Jenkins</span>
+        <span class="skill-tag">GitLab</span>
+        <span class="skill-tag">Maven</span>
+        <span class="skill-tag">Docker</span>
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <div class="skill-cat-header">
+        <div class="skill-cat-icon">🔐</div>
+        <div class="skill-cat-name">Security & Auth</div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">OAuth 2.0</span>
+        <span class="skill-tag">SAML / SSO</span>
+        <span class="skill-tag">AES-256</span>
+        <span class="skill-tag">JWT</span>
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <div class="skill-cat-header">
+        <div class="skill-cat-icon">🏗️</div>
+        <div class="skill-cat-name">Architecture & QA</div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Microservices</span>
+        <span class="skill-tag">REST API Design</span>
+        <span class="skill-tag">SOLID Principles</span>
+        <span class="skill-tag">LLD</span>
+        <span class="skill-tag">JUnit 5</span>
+        <span class="skill-tag">Mockito</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Contact -->
+<div class="contact-section reveal" id="contact">
+  <div class="section-tag" style="justify-content: center;">Contact</div>
+  <h2>Let's Build Something</h2>
+  <p class="contact-desc">
+    I'm actively exploring Java Software Engineer roles. If you're building backend systems in fintech, banking, or enterprise domains — I'd love to hear from you.
+  </p>
+  <div class="contact-links">
+    <a href="mailto:likhithashreejver@gmail.com" class="btn-primary">↗ Email Me</a>
+    <a href="https://www.linkedin.com/in/likhithashree-a-j-50834b258/" target="_blank" class="btn-ghost">LinkedIn</a>
+  </div>
+</div>
+
+<footer>
+  <span>Likhithashree AJ</span>
+  <span>Java Software Engineer · Bengaluru, India</span>
+  <span style="color: var(--text-dim)">Built with care ♥</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 5 + 'px';
+    cursor.style.top = my - 5 + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.highlight-card').forEach((card, i) => {
+    card.style.transitionDelay = i * 0.08 + 's';
+  });
+</script>
+</body>
+</html>
